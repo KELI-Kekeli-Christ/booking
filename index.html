@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hôtel Le Luxe - Réservation Directe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* VARIABLES ET RESET */
+        :root {
+            --color-primary: #8B4513; /* Marron/Terre Cuite pour le luxe */
+            --color-accent: #A0522D;
+            --color-text: #333;
+            --color-light: #F8F8F8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--color-text);
+            background-color: var(--color-light);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+        }
+
+        /* --- HERO SECTION (FULLSCREEN) --- */
+        .hero-section {
+            height: 100vh;
+            /* REMPLACER l'URL de l'image par une image haute qualité */
+            background-image: url('https://picsum.photos/1920/1080?random=1'); 
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: background-color 0.5s;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); 
+            z-index: 1;
+            transition: background-color 0.5s;
+        }
+        
+        /* Effet de défilement (ajouté par JS) */
+        .hero-section.scrolled .hero-overlay {
+            background-color: rgba(0, 0, 0, 0.6); 
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .hero-content p {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            font-weight: 300;
+        }
+
+        /* --- BOOKING WIDGET (FLOTTANT) --- */
+        .booking-widget {
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 3;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            max-width: 90%;
+        }
+
+        .widget-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--color-primary);
+            border-bottom: 1px solid var(--color-light);
+            padding-bottom: 10px;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 400;
+            margin-bottom: 5px;
+            color: var(--color-text);
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--color-primary);
+            outline: none;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 1.1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--color-accent);
+            transform: translateY(-1px);
+        }
+
+        /* --- GALERIE (CHAMBRES) --- */
+        .rooms-gallery {
+            padding: 60px 5%;
+            text-align: center;
+        }
+
+        .rooms-gallery h2 {
+            font-size: 3rem;
+            margin-bottom: 40px;
+            color: var(--color-primary);
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .room-card {
+            width: 300px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .room-image {
+            height: 200px;
+            /* REMPLACER les URLs des images */
+            background-size: cover;
+            background-position: center;
+        }
+
+        .room-card h3 {
+            font-size: 1.5rem;
+            margin-top: 15px;
+            padding: 0 20px;
+            color: var(--color-primary);
+        }
+
+        .room-card p {
+            padding: 0 20px 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: var(--color-text);
+            color: var(--color-light);
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            .booking-widget {
+                position: static; 
+                transform: none;
+                margin: 30px auto;
+                width: 90%;
+            }
+            .hero-section {
+                height: auto;
+                padding-top: 100px; 
+                padding-bottom: 30px; 
+                flex-direction: column;
+            }
+            .card-container {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <header class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>L'Élégance Redéfinie</h1>
+            <p>Réservez directement pour le meilleur tarif garanti.</p>
+        </div>
+        
+        <div id="booking-widget" class="booking-widget">
+            <h3 class="widget-title">Réserver Votre Séjour</h3>
+            
+            <form action="https://formsubmit.co/hisciences331@gmail.com" method="POST" id="reservation-form">
+                
+                <input type="hidden" name="_subject" value="Nouvelle Demande de Réservation - Site Hôtel Luxe">
+                <input type="hidden" name="_next" value="http://votredomaine.com/merci.html"> 
+                
+                <div class="input-group">
+                    <label for="check-in">Arrivée</label>
+                    <input type="date" id="check-in" name="Arrivee" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="check-out">Départ</label>
+                    <input type="date" id="check-out" name="Depart" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="adults">Adultes</label>
+                    <select id="adults" name="Adultes" required>
+                        <option value="1">1</option>
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="email">Votre Email</label>
+                    <input type="email" id="email" name="Email_Client" placeholder="client@exemple.com" required>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    Vérifier & Réserver
+                </button>
+            </form>
+        </div>
+    </header>
+
+    <section class="rooms-gallery">
+        <h2>Nos Catégories</h2>
+        <div class="card-container">
+            <div class="room-card">
+                <div class="room-image" style="background-image: url('https://picsum.photos/600/400?random=2');"></div>
+                <h3>Suite Panoramique</h3>
+                <p>Vue imprenable, lit King-size, et service de majordome sur demande. Le luxe à son apogée.</p>
+            </div>
+            <div class="room-card">
+                <div class="room-image" style="background-image: url('https://picsum.photos/600/400?random=3');"></div>
+                <h3>Chambre Classique</h3>
+                <p>Confort absolu et design moderne. Parfait pour un court séjour ou un voyage d'affaires.</p>
+            </div>
+            <div class="room-card">
+                <div class="room-image" style="background-image: url('https://picsum.photos/600/400?random=4');"></div>
+                <h3>Chambre Familiale</h3>
+                <p>Deux chambres communicantes pour un espace maximal et un séjour serein en famille.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Hôtel Le Luxe | Réservation Directe Garantie | &copy; 2025</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.querySelector('.hero-section');
+
+            // Ajoute la classe 'scrolled' au header après un léger défilement
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 10) {
+                    header.classList.add('scrolled'); 
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+            
+            // NOTE : Le formulaire est géré par FormSubmit (voir balise <form action="...">)
+            // Aucune logique complexe de soumission en JS n'est nécessaire.
+        });
+    </script>
+</body>
+</html>
